@@ -15,9 +15,32 @@
         <form @submit="addPlayer">
             <input v-model="newPlayer" type="text" >
         </form>
-        <ul>
-            <li v-for="player in players" @click="removePlayer(player)">{{player.name}}</li>
-        </ul>
+        <div class="row">
+            <div class="col">
+                <div v-for="player in players">
+                    <h2>{{player.name}}</h2>
+                    <div class="btn-group" role="group" aria-label="Basic outlined example">
+                        <button type="button" class="btn btn-outline-primary">Test</button>
+                        <button type="button" class="btn btn-primary" @click="addToDisallow(player.id)">--></button>
+                        <button type="button" class="btn btn-danger" @click="removePlayer(player.id)">Remove</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <h2>Exclusion Teams</h2>
+                <ul>
+                    <li v-for="member in disallowTeam" @click="removeFromDisallow(member.id)">{{member.name}}</li>
+                </ul>
+                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                    <button type="button" class="btn btn-danger" v-if="disallowTeam.length > 0" @click="clearDisallowTeam">Clear</button>
+                    <button type="button" class="btn btn-success" v-if="disallowTeam.length > 1" @click="addToDisallowList">Add</button>
+                </div>
+                <h2>Exclusion List</h2>
+                <ul>
+                    <li v-for="team in disallowList">{{team[0].name}} & {{team[1].name}}</li>
+                </ul>
+            </div>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="app.js"></script>

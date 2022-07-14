@@ -3,7 +3,8 @@ var app = new Vue({
     data: {
       hello: 'Hello Vue!',
       players: [],
-      disallowTeams: [],
+      disallowList: [],
+      disallowTeam: [],
       newPlayer: ''
     },
     mounted: function() {
@@ -11,6 +12,7 @@ var app = new Vue({
         if (localData) {
             const data = JSON.parse(localData);
             this.players = data.players;
+            this.disallowList = data.disallowList;
         }
     },
     methods: {
@@ -25,20 +27,48 @@ var app = new Vue({
 
             self.saveToLocal();
         },
-        removePlayer: function(playerData) {
+        removePlayer: function(id) {
             // console.log(player);
             const self = this;
-            const findPlayerIndex = this.players.findIndex(player => player.id === playerData.id);
+            const findPlayerIndex = this.players.findIndex(player => player.id === id);
             if (findPlayerIndex > -1) {
                 self.players.splice(findPlayerIndex, 1);
+                self.saveToLocal();
             }
+        },
+        addToDisallow: function(id) {
+            const self = this;
+
+            if (self.disallowTeam.length > 1 || self.disallowTeam.findIndex(player => player.id === id) > -1) return;
+
+            const findPlayer = this.players.find(player => player.id === id);
+            if (findPlayer) {
+                self.disallowTeam.push(findPlayer);
+            }
+        },
+        removeFromDisallow: function(id) {
+            const self = this;
+            // console.log(id);
+            const findPlayerIndex = this.disallowTeam.findIndex(player => player.id === id);
+            // console.log(self.disallowTeam[findPlayerIndex]);
+            if (findPlayerIndex > -1) {
+                self.disallowTeam.splice(findPlayerIndex, 1);
+            }
+        },
+        clearDisallowTeam: function() {
+            this.disallowTeam = [];
+        },
+        addToDisallowList: function() {
+            this.disallowList.push(this.disallowTeam);
+            this.saveToLocal();
+            this.disallowTeam = [];
         },
         clearStorage: function() {
             localStorage.removeItem('pickleData');
             this.players = [];
         },
         saveToLocal: function() {
-            localStorage.setItem('pickleData', JSON.stringify({players: self.players}));
+            localStorage.setItem('pickleData', JSON.stringify({players: this.players, disallowList: this.disallowList}));
         }
     }
   })
