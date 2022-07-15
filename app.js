@@ -5,7 +5,8 @@ var app = new Vue({
       players: [],
       disallowList: [],
       disallowTeam: [],
-      newPlayer: ''
+      newPlayer: '',
+      popMsg: []
     },
     mounted: function() {
         const localData = localStorage.getItem('pickleData');
@@ -35,11 +36,25 @@ var app = new Vue({
                 self.players.splice(findPlayerIndex, 1);
                 self.saveToLocal();
             }
+
+            let updateDisallowList = [];
+            self.disallowList.forEach((team, index) => {
+                if (team[0].id !== id && team[0].id) {
+                    updateDisallowList.push(team);
+                }
+            });
+            if (updateDisallowList.length !== self.disallowList.length) {
+                self.disallowList = updateDisallowList;
+                self.saveToLocal();
+            }
         },
         addToDisallow: function(id) {
             const self = this;
 
-            if (self.disallowTeam.length > 1 || self.disallowTeam.findIndex(player => player.id === id) > -1) return;
+            if (self.disallowTeam.length > 1 || self.disallowTeam.findIndex(player => player.id === id) > -1) {
+                self.sendPopMsg((self.players.find((player) => player.id === id)).name + ' already added');
+                return;
+            }
 
             const findPlayer = this.players.find(player => player.id === id);
             if (findPlayer) {
@@ -59,9 +74,40 @@ var app = new Vue({
             this.disallowTeam = [];
         },
         addToDisallowList: function() {
-            this.disallowList.push(this.disallowTeam);
-            this.saveToLocal();
-            this.disallowTeam = [];
+            const self = this;
+
+            let id1 = self.disallowTeam[0].id;
+            let id2 = self.disallowTeam[1].id;
+
+            const findTeamIndex = self.disallowList.findIndex(team => (team[0].id === id1 || team[1].id === id1) && (team[0].id === id2 || team[1].id === id2) );
+
+            if (findTeamIndex > -1) {
+                self.sendPopMsg('Team is already part of the exclusion list');
+                return;
+            }
+
+            self.disallowList.push(self.disallowTeam);
+            self.saveToLocal();
+            self.disallowTeam = [];
+        },
+        removeFromDisallowList: function(team) {
+            const self = this;
+
+            let id1 = team[0].id;
+            let id2 = team[1].id;
+            
+            const findTeamIndex = self.disallowList.findIndex(team => (team[0].id === id1 || team[1].id === id1) && (team[0].id === id2 || team[1].id === id2) );
+            if (findTeamIndex > -1) {
+                self.disallowList.splice(findTeamIndex, 1);
+                self.saveToLocal();
+            }
+        },
+        sendPopMsg: function(msg, timeout = 2000) {
+            const self = this;
+            self.popMsg.push(msg);
+            setTimeout(() => {
+                self.popMsg.pop();
+            }, timeout)
         },
         clearStorage: function() {
             localStorage.removeItem('pickleData');

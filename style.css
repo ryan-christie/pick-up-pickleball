@@ -1,0 +1,11 @@
+.pop-msg {
+    padding: 1em;
+    border: solid 1px #EEE;
+    border-radius: 5px;
+    position: fixed;
+    top: 1em;
+    left: 50%;
+    width: 500px;
+    margin-left: 350px;
+    min-height: 600px;
+}

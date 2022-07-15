@@ -37,9 +37,13 @@
                 </div>
                 <h2>Exclusion List</h2>
                 <ul>
-                    <li v-for="team in disallowList">{{team[0].name}} & {{team[1].name}}</li>
+                    <li v-for="team in disallowList" @click="removeFromDisallowList(team)">{{team[0].name}} & {{team[1].name}}</li>
                 </ul>
             </div>
+        </div>
+        <div class="pop-msg">
+            <h3>Messages</h3>
+            <p v-for="msg in popMsg">{{ msg }}</p>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
