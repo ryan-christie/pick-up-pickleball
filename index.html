@@ -15,12 +15,12 @@
         <form @submit="addPlayer">
             <input v-model="newPlayer" type="text" >
         </form>
-        <div class="row">
+        <div class="row mb-3">
             <div class="col">
                 <div v-for="player in players">
                     <h2>{{player.name}}</h2>
                     <div class="btn-group" role="group" aria-label="Basic outlined example">
-                        <button type="button" class="btn btn-outline-primary">Test</button>
+                        <button type="button" class="btn" :class="{ 'btn-success': player.available, 'btn-warning': !player.available }" @click="toggleAvailable(player.id)">Available</button>
                         <button type="button" class="btn btn-primary" @click="addToDisallow(player.id)">--></button>
                         <button type="button" class="btn btn-danger" @click="removePlayer(player.id)">Remove</button>
                     </div>
@@ -41,12 +41,38 @@
                 </ul>
             </div>
         </div>
+        <div class="row">
+            <p><button type="button" class="btn btn-primary" @click="createMatches">Create Match ups</button></p>
+            <div class="col">
+                <p class="strong">Num Teams: {{ teams.length }}</p>
+                <ul>
+                    <li v-for="team in teams" :title="team[2]">{{team[0].name}} & {{team[1].name}}</li>
+                </ul>
+
+                <ul>
+                    <li v-for="player in timesGrouped">{{player.player}}: {{player.num}}</li>
+                </ul>
+            </div>
+            <div class="col">
+                <p class="strong">Possible Matches: {{ matchesPossible.length }}</p>
+                <ul>
+                    <li v-for="match in matchesPossible">{{match.team1[0].name}} & {{match.team1[1].name}} VS {{match.team2[0].name}} & {{match.team2[1].name}}</li>
+                </ul>
+            </div>
+            <div class="col">
+                <p class="strong">Spread Matches: {{ matches.length }}</p>
+                <ul>
+                    <li v-for="match in matches">{{match.team1[0].name}} & {{match.team1[1].name}} VS {{match.team2[0].name}} & {{match.team2[1].name}} ({{ match.weight }})</li>
+                </ul>
+            </div>
+        </div>
         <div class="pop-msg">
             <h3>Messages</h3>
             <p v-for="msg in popMsg">{{ msg }}</p>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

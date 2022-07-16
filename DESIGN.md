@@ -17,6 +17,9 @@
 - Show history
 - Edit scores
 
+## In Process Design Options
+- ID for teams? Sort UUID of players and combine for team ID.
+
 
 
 ### Future Fancy
