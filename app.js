@@ -227,11 +227,10 @@ var app = new Vue({
 
             self.spreadMore(spreadMatches);
         },
-        spreadMore: function(matches = null) {
+        spreadMore: function(matches) {
             const self = this;
-            matches = matches || [...self.matches];
+            matches = matches?.type == 'click' ? [...self.matches] : matches;
             const now = Date.now();
-
             let iterations = 0;
             let foundSwap;
             do {
