@@ -27,14 +27,12 @@ var app = new Vue({
             let count = {};
 
             self.teams.forEach(team => {
-                team.forEach(player => {
-                    if (player.hasOwnProperty('name')) {
-                        if (count[player.name]) {
-                            count[player.name] += 1;
-                        }
-                        else {
-                            count[player.name] = 1;
-                        }
+                [team.p1, team.p2].forEach(player => {
+                    if (count[player.name]) {
+                        count[player.name] += 1;
+                    }
+                    else {
+                        count[player.name] = 1;
                     }
                 })
             });
@@ -146,30 +144,29 @@ var app = new Vue({
                     const findTeamIndex = self.disallowList.findIndex(team => (team[0].id === player.id || team[1].id === player.id) && (team[0].id === partner.id || team[1].id === partner.id) );
 
                     if (findTeamIndex < 0) {
-                        teams.push([player, partner, [player.id, partner.id].sort().join(':')]);
+                        // teams.push([player, partner, [player.id, partner.id].sort().join(':')]);
+                        teams.push({ id: [player.id, partner.id].sort().join(':'), p1: player, p2:partner });
                     }
                 }
             }
 
-            
             self.teams = _.shuffle(teams);
-            teams = self.teams.map(team => [ {id: team[0].id, name: team[0].name}, {id: team[1].id, name: team[1].name} ]);
+            teams = [...teams];
             const playerList = _.shuffle(pool.map(player => player.id));
-            // let workingPlayerList = [...playerList];
 
             let matchUps = [];
 
             for (let i = 0; i < teams.length; i++) {
                 const team = teams[i];
+                const teamID = team.id.split(':');
                 for (let j = i+1; j < teams.length; j++) {
                     const opponent = teams[j];
 
-                    if ( ( opponent[0].id !== team[0].id && opponent[1].id !== team[0].id ) && ( opponent[0].id !== team[1].id && opponent[1].id !== team[1].id ) ) {
+                    if (_.intersection(teamID, opponent.id.split(':')).length === 0) {
                         matchUps.push({ team1: team, team2: opponent });
                     }
                 }
             }
-
             
             self.matchesPossible = matchUps;
 
@@ -177,11 +174,6 @@ var app = new Vue({
                 match.weight = 0;
                 return match;
             }));
-            // matchUps = matchUps.map(match => {
-            //     match.weight = 0;
-            //     return match;
-            // });
-
             
             let spreadMatches = [];
             let cycles = 200;
@@ -189,71 +181,77 @@ var app = new Vue({
             do {
 
                 const newMatch = matchUps.pop();
-                spreadMatches.push(newMatch);
-
-                let newMatchTeamOneIDs = newMatch.team1.map(player => player.id);
-                let newMatchTeamTwoIDs = newMatch.team2.map(player => player.id);
+                
+                let newMatchTeamOneIDs = [newMatch.team1.p1.id, newMatch.team1.p2.id];
+                let newMatchTeamTwoIDs = [newMatch.team2.p1.id, newMatch.team2.p2.id];
 
                 let newMatchPlayers = [ ...newMatchTeamOneIDs, ...newMatchTeamTwoIDs ];
 
                 let noPlayPlayers = _.difference( playerList, newMatchPlayers );
 
+                newMatch.dnp = self.players.filter(player => noPlayPlayers.indexOf(player.id) > -1).map(player => player.name).join(', ');
+                newMatch.dnpIDs = noPlayPlayers;
+
+                spreadMatches.push(newMatch);
+
                 matchUps.forEach(match => {
-                    let matchTeamOneIDs = match.team1.map(player => player.id);
-                    let matchTeamTwoIDs = match.team2.map(player => player.id);
+                    let matchTeamOneIDs = [match.team1.p1.id, match.team1.p2.id];
+                    let matchTeamTwoIDs = [match.team2.p1.id, match.team2.p2.id];
 
                     let matchPlayers = [ ...matchTeamOneIDs, ...matchTeamTwoIDs];
 
-                    let inter = _.intersection(newMatchPlayers, matchPlayers);
-                    match.weight += inter.length * -1;
+                    let w1 = Math.pow(1.5, _.intersection(newMatchPlayers, matchPlayers).length ) * -1;
+                    match.weight += w1;
 
-                    // Add weight for players who didn't play this round
-                    match.weight += (_.intersection(noPlayPlayers, matchPlayers).length ^ 2) - 1;
+                    const notInLastMatch = _.intersection(noPlayPlayers, matchPlayers);
+                    let w2 = Math.pow(2, notInLastMatch.length);
+                    match.weight += w2;
 
-                    let repeatTeamWeight = 
-                        _.intersection(newMatchTeamOneIDs, matchTeamOneIDs).length +
-                        _.intersection(newMatchTeamOneIDs, matchTeamTwoIDs).length +
-                        _.intersection(newMatchTeamTwoIDs, matchTeamOneIDs).length +
-                        _.intersection(newMatchTeamTwoIDs, matchTeamTwoIDs).length;
-                    
-                    match.weight += repeatTeamWeight * -2;
+                    let w3 = 0;
+                    if (newMatch.team1.id == match.team1.id ||
+                        newMatch.team1.id == match.team2.id ||
+                        newMatch.team2.id == match.team1.id ||
+                        newMatch.team2.id == match.team1.id) 
+                    {
+                        w3 = -6;
+                    } 
+
+                    match.weight += w3;
                 });
                 matchUps = _.sortBy(matchUps, 'weight');
 
                 if (!matchUps.length) break;
 
-                // if (workingPlayerList.length < 4) workingPlayerList = [...workingPlayerList, ...playerList];
-
-                // const findMatchIndex = matchUps.findIndex( match => (
-                //     workingPlayerList.indexOf(match.team1[0].id) > -1 && 
-                //     workingPlayerList.indexOf(match.team1[1].id) > -1 && 
-                //     workingPlayerList.indexOf(match.team2[0].id) > -1 && 
-                //     workingPlayerList.indexOf(match.team2[1].id) > -1 
-                // ));
-
-                // const newMatch = matchUps[findMatchIndex];
-
-                // if (!newMatch) break;
-
-                // spreadMatches.push(newMatch);
-
-
-                // matchUps.splice(findMatchIndex, 1);
-                // // matchUps = matchUps.filter(match => 
-                // //     (match.team1[0].id !== newMatch.team1[0].id && match.team1[1].id !== newMatch.team1[1].id) &&
-                // //     (match.team1[1].id !== newMatch.team1[0].id && match.team1[0].id !== newMatch.team1[1].id)
-                // // ).filter(match => 
-                // //     (match.team2[0].id !== newMatch.team2[0].id && match.team2[1].id !== newMatch.team2[1].id) &&
-                // //     (match.team2[1].id !== newMatch.team2[0].id && match.team2[0].id !== newMatch.team2[1].id)
-                // // );
-                // workingPlayerList = _.pullAll(workingPlayerList, [ ...newMatch.team1.map(player => player.id), ...newMatch.team2.map(player => player.id) ]);
-
                 cycle += 1;
             } while (cycle < cycles)
 
-            // self.matchesPossible = matchUps;
+            self.spreadMore(spreadMatches);
+        },
+        spreadMore: function(matches = null) {
+            const self = this;
+            matches = matches || [...self.matches];
+            const now = Date.now();
 
-            self.matches = spreadMatches;
+            let iterations = 0;
+            let foundSwap;
+            do {
+                foundSwap = false;
+                const len = matches.length
+                for (let index = 0; index < len; index++) {
+                    const match = matches[index];
+                    if (index > 0 && index < (len - 1) && 
+                        _.intersection(match.dnpIDs, matches[index+1].dnpIDs).length > 0 && 
+                        _.intersection(matches[index-1].dnpIDs, matches[index+1].dnpIDs).length === 0)
+                    {
+                        matches[index] = matches[index-1];
+                        matches[index-1] = match;
+                        foundSwap = true;
+                    }
+                }
+                iterations += 1;
+            } while (Date.now() - now < 50 && foundSwap)
+
+            self.matches = matches;
         },
         sendPopMsg: function(msg, timeout = 2000) {
             const self = this;

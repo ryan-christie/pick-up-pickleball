@@ -42,27 +42,28 @@
             </div>
         </div>
         <div class="row">
-            <p><button type="button" class="btn btn-primary" @click="createMatches">Create Match ups</button></p>
-            <div class="col">
+            <p><button type="button" class="btn btn-primary" @click="createMatches">Create Match ups</button> <button type="button" class="btn btn-outline-primary" @click="spreadMore">Spread More</button></p>
+            <div class="col-md-3">
                 <p class="strong">Num Teams: {{ teams.length }}</p>
                 <ul>
-                    <li v-for="team in teams" :title="team[2]">{{team[0].name}} & {{team[1].name}}</li>
+                    <li v-for="team in teams" :title="team[2]">{{team.p1.name}} & {{team.p2.name}}</li>
                 </ul>
 
+                <p>Number of times grouped:</p>
                 <ul>
                     <li v-for="player in timesGrouped">{{player.player}}: {{player.num}}</li>
                 </ul>
             </div>
-            <div class="col">
+            <div class="col-md-4">
                 <p class="strong">Possible Matches: {{ matchesPossible.length }}</p>
                 <ul>
-                    <li v-for="match in matchesPossible">{{match.team1[0].name}} & {{match.team1[1].name}} VS {{match.team2[0].name}} & {{match.team2[1].name}}</li>
+                    <li v-for="match in matchesPossible">{{match.team1.p1.name}} & {{match.team1.p2.name}} VS {{match.team2.p1.name}} & {{match.team2.p2.name}}</li>
                 </ul>
             </div>
             <div class="col">
                 <p class="strong">Spread Matches: {{ matches.length }}</p>
                 <ul>
-                    <li v-for="match in matches">{{match.team1[0].name}} & {{match.team1[1].name}} VS {{match.team2[0].name}} & {{match.team2[1].name}} ({{ match.weight }})</li>
+                    <li v-for="match in matches">{{match.team1.p1.name}} & {{match.team1.p2.name}} VS {{match.team2.p1.name}} & {{match.team2.p2.name}} ({{ match.weight }}) | {{ match.dnp }}</li>
                 </ul>
             </div>
         </div>

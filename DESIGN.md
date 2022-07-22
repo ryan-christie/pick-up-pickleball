@@ -19,6 +19,8 @@
 
 ## In Process Design Options
 - ID for teams? Sort UUID of players and combine for team ID.
+- Keep stats for which team started and with teammate served first
+- Use stats to balance start team and first server.
 
 
 
