@@ -10,3 +10,7 @@
     min-height: 600px;
     right: 1em;
 }
+.next-match {
+    border: solid 1px #CCC;
+    border-radius: 5px;
+}
