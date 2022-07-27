@@ -145,8 +145,8 @@ Vue.component('score-input', {
             const match = this.match;
             const statsTeam = {
                 firstServe: match.team1.id == team.id ? 1 : 0,
-                win: team == match.winningTeam ? 1 : 0,
-                loss: team !== match.winningTeam ? 1 : 0
+                win: team.id == match.winningTeam ? 1 : 0,
+                loss: team.id !== match.winningTeam ? 1 : 0
             };
 
             if (data.teams.hasOwnProperty(team.id)) {
