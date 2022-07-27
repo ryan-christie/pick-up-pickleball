@@ -39,7 +39,35 @@
                 <ul>
                     <li v-for="team in disallowList" @click="removeFromDisallowList(team)">{{team[0].name}} & {{team[1].name}}</li>
                 </ul>
-                <h2>Current Matches</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p><button type="button" class="btn btn-primary" @click="createMatches">Start Session</button></p>
+                <div class="row">
+                    <div class="col-12 col-md-6 mb-3" v-for="match in nextMatches" v-bind:key="match.id">
+                        <div class="next-match row p-2 mx-1">
+                            <div class="align-items-center justify-content-around d-flex mb-3 gap-2">
+                                <div class="next-match__team next-match__team--1">
+                                    {{match.team1.p1.name}} <br>
+                                    {{match.team1.p2.name}}
+                                </div>
+                                <div class="text-center">vs.</div>
+                                <div class="next-match__team next-match__team--2">
+                                    {{match.team2.p1.name}} <br>
+                                    {{match.team2.p2.name}}
+                                </div>
+                            </div>
+                            <div class="justify-content-center d-flex gap-2">
+                                <button type="button" class="btn btn-success" @click="startMatch(match)">Play</button>
+                                <button type="button" class="btn btn-warning" @click="match.skip='true'">Skip</button>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+            <div class="col">
+                <h2 class="mb-3">Current Matches</h2>
                 <div class="mb-3" v-for="match in matches" v-if="match.inProgress " v-bind:key="match.id">
                     <div class="next-match next-match--in-progress row p-2 mx-1">
                         <div class="align-items-center justify-content-around d-flex mb-3 gap-2">
@@ -64,28 +92,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <p><button type="button" class="btn btn-primary" @click="createMatches">Start Session</button></p>
-            <div class="col-2 col-md-3 mb-3" v-for="match in nextMatches" v-bind:key="match.id">
-                <div class="next-match row p-2 mx-1">
-                    <div class="align-items-center justify-content-around d-flex mb-3 gap-2">
-                        <div class="next-match__team next-match__team--1">
-                            {{match.team1.p1.name}} <br>
-                            {{match.team1.p2.name}} 
-                        </div>
-                        <div class="text-center">vs.</div>
-                        <div class="next-match__team next-match__team--2">
-                            {{match.team2.p1.name}} <br>
-                            {{match.team2.p2.name}} 
-                        </div>
-                    </div>
-                    <div class="justify-content-center d-flex gap-2">
-                        <button type="button" class="btn btn-success" @click="startMatch(match)">Play</button>
-                        <button type="button" class="btn btn-warning" @click="match.skip='true'">Skip</button>
-                    </div>
-                </div>
-            </div> 
         </div>
         <div class="row">
             <details>
