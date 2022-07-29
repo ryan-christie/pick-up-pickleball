@@ -194,10 +194,6 @@ var app = new Vue({
 
             self.matches = matches;
         },
-        // startMatch: function(match) {
-        //     match.inProgress = true;
-        //     match.startTS = Date.now();
-        // },
         sendPopMsg: function(msg, msgDuration = 2000) {
             const self = this;
             self.popMsg.push(msg);

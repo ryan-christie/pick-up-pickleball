@@ -11,48 +11,27 @@
 <body>
     <div id="app" class="container my-3" v-cloak>
         <h1>Pick-Up Pickleball</h1>
+
         <p><button type="button" class="btn btn-danger" @click="clearStorage" >Clear Storage</button></p>
+
         <manage-players
             :new-player="newPlayer"
             :players="players"
             :disallow-team="disallowTeam"
             :disallow-list="disallowList"
         ></manage-players>
+
         <manage-session
             :players="players"
             :matches="matches"
         ></manage-session>
         
-        <div class="row">
-            <details>
-                <summary>Debug</summary>
-                <div class="row mt-3">
-                    <div class="col-md-3">
-                        <p class="strong">Num Teams: {{ teams.length }}</p>
-                        <ul>
-                            <li v-for="team in teams" :title="team[2]">{{team.p1.name}} & {{team.p2.name}}</li>
-                        </ul>
+        <debug
+            :teams="teams"
+            :matches="matches"
+            :matches-possible="matchesPossible"
+        ></debug>
         
-                        <p>Number of times grouped:</p>
-                        <ul>
-                            <li v-for="player in timesGrouped">{{player.player}}: {{player.num}}</li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4">
-                        <p class="strong">Possible Matches: {{ matchesPossible.length }}</p>
-                        <ul>
-                            <li v-for="match in matchesPossible">{{match.team1.p1.name}} & {{match.team1.p2.name}} VS {{match.team2.p1.name}} & {{match.team2.p2.name}}</li>
-                        </ul>
-                    </div>
-                    <div class="col">
-                        <p class="strong">Spread Matches: {{ matches.length }}</p>
-                        <ul>
-                            <li v-for="match in matches">{{match.team1.p1.name}} & {{match.team1.p2.name}} VS {{match.team2.p1.name}} & {{match.team2.p2.name}} ({{ match.weight }}) | {{ match.dnp }}</li>
-                        </ul>
-                    </div>
-                </div>
-            </details>
-        </div>
         <div class="pop-msg">
             <h3>Messages</h3>
             <p v-for="msg in popMsg">{{ msg }}</p>
@@ -64,6 +43,7 @@
     <script src="/components/score-input.js"></script>
     <script src="/components/manage-session.js"></script>
     <script src="/components/manage-players.js"></script>
+    <script src="/components/debug.js"></script>
     <script src="/app.js"></script>
 </body>
 </html>
