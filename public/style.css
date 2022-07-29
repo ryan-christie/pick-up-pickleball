@@ -1,3 +1,6 @@
+[v-cloak] {
+    visibility: hidden;
+}
 .pop-msg {
     padding: 1em;
     border: solid 1px #EEE;

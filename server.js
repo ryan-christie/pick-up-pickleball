@@ -1,5 +1,6 @@
 const express = require('express');
 const expressNunjucks = require('express-nunjucks');
+const fs = require('fs');
 const app = express();
 const isDev = app.get('env') === 'development';
 const port = 3000
@@ -10,6 +11,11 @@ app.use(express.static('public'));
 const njk = expressNunjucks(app, {
     watch: isDev,
     noCache: isDev
+});
+
+app.get('/', (req, res) => {
+    const components = fs.readdirSync('./public/components').map((file) => `/components/${file}`);
+    res.render('index', { components });
 });
 
 app.get('/view', (req, res) => {
