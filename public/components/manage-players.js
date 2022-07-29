@@ -78,7 +78,7 @@ Vue.component('manage-players', {
             const self = this;
 
             if (self.disallowTeam.length > 1 || self.disallowTeam.findIndex(player => player.id === id) > -1) {
-                self.sendPopMsg((self.players.find((player) => player.id === id)).name + ' already added');
+                self.$root.$emit('send-message', (self.players.find((player) => player.id === id)).name + ' already added');
                 return;
             }
 
@@ -106,7 +106,7 @@ Vue.component('manage-players', {
             const findTeamIndex = self.disallowList.findIndex(team => (team[0].id === id1 || team[1].id === id1) && (team[0].id === id2 || team[1].id === id2) );
 
             if (findTeamIndex > -1) {
-                self.sendPopMsg('Team is already part of the exclusion list');
+                self.$root.$emit('send-message', 'Team is already part of the exclusion list');
                 return;
             }
 

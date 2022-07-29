@@ -32,10 +32,7 @@
             :matches-possible="matchesPossible"
         ></debug>
         
-        <div class="pop-msg">
-            <h3>Messages</h3>
-            <p v-for="msg in popMsg">{{ msg }}</p>
-        </div>
+        <messages :pop-msg="popMsg">
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
@@ -43,6 +40,7 @@
     <script src="/components/score-input.js"></script>
     <script src="/components/manage-session.js"></script>
     <script src="/components/manage-players.js"></script>
+    <script src="/components/messages.js"></script>
     <script src="/components/debug.js"></script>
     <script src="/app.js"></script>
 </body>

@@ -33,6 +33,7 @@ var app = new Vue({
 
         this.$root.$on('save-to-local', this.saveToLocal);
         this.$root.$on('create-matches', this.createMatches);
+        this.$root.$on('send-message', this.sendMessage);
     },
     computed: {
         timesGrouped: function() {
@@ -194,7 +195,7 @@ var app = new Vue({
 
             self.matches = matches;
         },
-        sendPopMsg: function(msg, msgDuration = 2000) {
+        sendMessage: function(msg, msgDuration = 2000) {
             const self = this;
             self.popMsg.push(msg);
             setTimeout(() => {
