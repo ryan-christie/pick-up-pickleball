@@ -32,6 +32,7 @@ var app = new Vue({
         }
 
         this.$root.$on('save-to-local', this.saveToLocal);
+        this.$root.$on('create-matches', this.createMatches);
     },
     computed: {
         timesGrouped: function() {
@@ -54,21 +55,9 @@ var app = new Vue({
             return _.sortBy(_.map(count, (num, player) => {
                 return { player, num };
             }), ['num', 'player']).reverse();
-        },
-        nextMatches: function() {
-            const self = this;
-            const availMatch = self.matches.filter(match => {
-                return match.endTS === null && match.skip === false && match.inProgress === false;
-            });
-
-            const numShow = Math.floor(self.players.filter(player => player.available).length / 4) + 1;
-            return availMatch.splice(0, numShow);
         }
     },
     methods: {
-        createUUID: function() {
-            return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
-        },
         createMatches: function() {
             const self = this;
             let pool = self.players.filter(player => player.available);
@@ -106,7 +95,7 @@ var app = new Vue({
 
                     if (_.intersection(teamID, opponent.id.split(':')).length === 0) {
                         matchUps.push({
-                            id: self.createUUID(),
+                            id: util.createUUID,
                             team1: team, 
                             team2: opponent,
                             skip: false,
@@ -205,41 +194,9 @@ var app = new Vue({
 
             self.matches = matches;
         },
-        startMatch: function(match) {
-            match.inProgress = true;
-            match.startTS = Date.now();
-        },
-        matchOver: function(match) {
-            match.endTS = Date.now();
-        },
-        matchWon: function(match, teamID) {
-            match.winningTeam = teamID;
-            this.matchFinalScore(match);
-        },
-        // matchFinalScore: function (match) {
-        //     // val = parseInt(val, 10);
-        //     const self = this;
-        //     const scoreDiff = parseInt(self.scoreDiff, 10);
-
-        //     // if (scoreDiff === 0) return;
-
-        //     if (scoreDiff < 0) {
-        //         match.winningTeam == match.team1.id;
-        //         match.score2 = 11
-        //         match.score1 = 10 - (scoreDiff * -1) ;
-        //         return;
-        //     }
-            
-        //     if (scoreDiff > 0) {
-        //         match.winningTeam == match.team2.id;
-        //         match.score2 = 10 - scoreDiff;
-        //         match.score1 = 11;
-        //         return;
-        //     }
-
-        //     match.winningTeam == null;
-        //     match.score1 = 0;
-        //     match.score2 = 0;
+        // startMatch: function(match) {
+        //     match.inProgress = true;
+        //     match.startTS = Date.now();
         // },
         sendPopMsg: function(msg, msgDuration = 2000) {
             const self = this;
