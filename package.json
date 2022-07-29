@@ -1,0 +1,24 @@
+{
+  "name": "pick-up-pickleball",
+  "version": "0.9.0",
+  "description": "Web App for managing a pool of pickleball players and matches",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryan-christie/pick-up-pickleball.git"
+  },
+  "author": "Ryan Christie",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/ryan-christie/pick-up-pickleball/issues"
+  },
+  "homepage": "https://github.com/ryan-christie/pick-up-pickleball#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "express-nunjucks": "^2.2.5",
+    "nunjucks": "^3.2.3"
+  }
+}
