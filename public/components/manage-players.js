@@ -1,8 +1,10 @@
 Vue.component('manage-players', {
     data() {
-        return {}
+        return {
+            disallowTeam: []
+        }
     },
-    props: ['newPlayer', 'players', 'disallowTeam', 'disallowList'],
+    props: ['newPlayer', 'players', 'disallowList'],
     template: /*html*/`
         <div>
             <form @submit="addPlayer">
