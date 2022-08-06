@@ -196,9 +196,9 @@ var app = new Vue({
 
             self.matches = matches;
         },
-        sendMessage: function(msg, delay = 2000) {
+        sendMessage: function(msg, options = {}) {
             const self = this;
-            self.toasts.push({ msg, id: Date.now(), delay });
+            self.toasts.push({ msg, id: Date.now(), ...options });
         },
         clearMessageQueue: function(id) {
             this.toasts = this.toasts.filter(toast => toast.id !== id);
