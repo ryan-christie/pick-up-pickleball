@@ -20,7 +20,7 @@ var app = new Vue({
       teams: [],
       matchesPossible: [],
       matches: [],
-      popMsg: [],
+      toasts: [],
       scoreDiff: 0
     },
     mounted: function() {
@@ -34,6 +34,7 @@ var app = new Vue({
         this.$root.$on('save-to-local', this.saveToLocal);
         this.$root.$on('create-matches', this.createMatches);
         this.$root.$on('send-message', this.sendMessage);
+        this.$root.$on('clear-message', this.clearMessageQueue);
     },
     computed: {
         timesGrouped: function() {
@@ -195,12 +196,12 @@ var app = new Vue({
 
             self.matches = matches;
         },
-        sendMessage: function(msg, msgDuration = 2000) {
+        sendMessage: function(msg, options = {}) {
             const self = this;
-            self.popMsg.push(msg);
-            setTimeout(() => {
-                self.popMsg.pop();
-            }, msgDuration)
+            self.toasts.push({ msg, id: Date.now(), ...options });
+        },
+        clearMessageQueue: function(id) {
+            this.toasts = this.toasts.filter(toast => toast.id !== id);
         },
         clearStorage: function() {
             localStorage.removeItem('pickleData');
