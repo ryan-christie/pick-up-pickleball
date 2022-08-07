@@ -23,7 +23,7 @@ Vue.component('bs-toast', {
               <button v-if="!message.action" type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body">
-              {{message.msg}}
+              <div v-html="message.msg"></div>
               <div v-if="message.action" class="mt-2 pt-2 border-top">
                   <button type="button" class="btn btn-primary btn-sm" @click="doAction">{{actionLabel}}</button>
                   <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">{{noActionLabel}}</button>

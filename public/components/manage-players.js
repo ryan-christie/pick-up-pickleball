@@ -17,7 +17,7 @@ Vue.component('manage-players', {
                         <div class="btn-group ms-auto" role="group" aria-label="Basic outlined example">
                             <button type="button" class="btn" :class="{ 'btn-success': player.available, 'btn-warning': !player.available }" @click="toggleAvailable(player.id)">Available</button>
                             <button type="button" class="btn btn-primary" @click="addToDisallow(player.id)">--></button>
-                            <button type="button" class="btn btn-danger" @click="removePlayer(player.id)">Remove</button>
+                            <button type="button" class="btn btn-danger" @click="removePlayerConfirm(player.id)">Remove</button>
                         </div>
                     </div>
                 </div>
@@ -38,13 +38,15 @@ Vue.component('manage-players', {
             </div>
         </div>
     `,
+    mounted: function() {
+        this.$root.$on('remove-player', this.removePlayer);
+    },
     methods: {
         addPlayer: function(e) {
             e.preventDefault();
 
             const self = this;
 
-            // const id = self.createUUID();
             const id = util.createUUID;
             self.players.push({id, name:self.newPlayer, available: true});
             self.newPlayer = '';
@@ -56,6 +58,17 @@ Vue.component('manage-players', {
             const index = self.players.findIndex(player => player.id === id);
             self.players[index].available = !self.players[index].available;
             self.$root.$emit('save-to-local');
+        },
+        removePlayerConfirm: function(id) {
+            const self = this;
+            const playerName = this.players.find(player => player.id === id).name;
+            self.$root.$emit('send-message', `Are you sure you want to remove <strong>${playerName}</strong>?`, {
+                action: 'remove-player',
+                style: 'danger',
+                actionLabel: `Yes, remove ${playerName}`,
+                autohide: false,
+                payload: id
+            });
         },
         removePlayer: function(id) {
             const self = this;
