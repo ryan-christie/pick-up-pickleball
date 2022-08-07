@@ -1,10 +1,11 @@
 Vue.component('manage-players', {
     data() {
         return {
+            newPlayer: '',
             disallowTeam: []
         }
     },
-    props: ['newPlayer', 'players', 'disallowList'],
+    props: ['players', 'disallowList'],
     template: /*html*/`
         <div>
             <form @submit="addPlayer">
@@ -46,12 +47,8 @@ Vue.component('manage-players', {
             e.preventDefault();
 
             const self = this;
-
-            const id = util.createUUID;
-            self.players.push({id, name:self.newPlayer, available: true});
+            self.$root.$emit('add-player', self.newPlayer);
             self.newPlayer = '';
-
-            self.$root.$emit('save-to-local');
         },
         toggleAvailable: function(id) {
             const self = this;
