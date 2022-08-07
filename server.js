@@ -15,7 +15,8 @@ const njk = expressNunjucks(app, {
 
 app.get('/', (req, res) => {
     const components = fs.readdirSync('./public/components').map((file) => `/components/${file}`);
-    res.render('index', { components });
+    const mixins = fs.readdirSync('./public/mixins').map((file) => `/mixins/${file}`);
+    res.render('index', { components, mixins });
 });
 
 app.get('/view', (req, res) => {
