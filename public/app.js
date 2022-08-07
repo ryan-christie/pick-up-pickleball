@@ -1,11 +1,9 @@
 var app = new Vue({
     el: '#app',
     data: {
-      hello: 'Hello Vue!',
       players: [],
       disallowList: [],
       disallowTeam: [],
-      newPlayer: '',
       teams: [],
       matchesPossible: [],
       matches: [],

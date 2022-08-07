@@ -1,10 +1,11 @@
 Vue.component('manage-players', {
     data() {
         return {
+            newPlayer: '',
             disallowTeam: []
         }
     },
-    props: ['newPlayer', 'players', 'disallowList'],
+    props: ['players', 'disallowList'],
     template: /*html*/`
         <div>
             <form @submit="addPlayer">
@@ -38,20 +39,13 @@ Vue.component('manage-players', {
             </div>
         </div>
     `,
-    mounted: function() {
-        this.$root.$on('remove-player', this.removePlayer);
-    },
     methods: {
         addPlayer: function(e) {
             e.preventDefault();
 
             const self = this;
-
-            const id = util.createUUID;
-            self.players.push({id, name:self.newPlayer, available: true});
+            self.$root.$emit('add-player', self.newPlayer);
             self.newPlayer = '';
-
-            self.$root.$emit('save-to-local');
         },
         toggleAvailable: function(id) {
             const self = this;
@@ -61,7 +55,10 @@ Vue.component('manage-players', {
         },
         removePlayerConfirm: function(id) {
             const self = this;
+            self.disallowTeam = [];
+            
             const playerName = this.players.find(player => player.id === id).name;
+
             self.$root.$emit('send-message', `Are you sure you want to remove <strong>${playerName}</strong>?`, {
                 action: 'remove-player',
                 style: 'danger',
@@ -69,25 +66,6 @@ Vue.component('manage-players', {
                 autohide: false,
                 payload: id
             });
-        },
-        removePlayer: function(id) {
-            const self = this;
-            const findPlayerIndex = this.players.findIndex(player => player.id === id);
-            if (findPlayerIndex > -1) {
-                self.players.splice(findPlayerIndex, 1);
-                self.$root.$emit('save-to-local');
-            }
-
-            let updateDisallowList = [];
-            self.disallowList.forEach((team, index) => {
-                if (team[0].id !== id && team[0].id) {
-                    updateDisallowList.push(team);
-                }
-            });
-            if (updateDisallowList.length !== self.disallowList.length) {
-                self.disallowList = updateDisallowList;
-                self.$root.$emit('save-to-local');
-            }
         },
         addToDisallow: function(id) {
             const self = this;
@@ -115,31 +93,19 @@ Vue.component('manage-players', {
         addToDisallowList: function() {
             const self = this;
 
-            let id1 = self.disallowTeam[0].id;
-            let id2 = self.disallowTeam[1].id;
-
-            const findTeamIndex = self.disallowList.findIndex(team => (team[0].id === id1 || team[1].id === id1) && (team[0].id === id2 || team[1].id === id2) );
-
-            if (findTeamIndex > -1) {
-                self.$root.$emit('send-message', 'Team is already part of the exclusion list');
-                return;
-            }
-
-            self.disallowList.push(self.disallowTeam);
-            self.$root.$emit('save-to-local');
+            self.$root.$emit('add-disallow-list', self.disallowTeam);
             self.disallowTeam = [];
         },
         removeFromDisallowList: function(team) {
             const self = this;
 
-            let id1 = team[0].id;
-            let id2 = team[1].id;
-            
-            const findTeamIndex = self.disallowList.findIndex(team => (team[0].id === id1 || team[1].id === id1) && (team[0].id === id2 || team[1].id === id2) );
-            if (findTeamIndex > -1) {
-                self.disallowList.splice(findTeamIndex, 1);
-                self.$root.$emit('save-to-local');
-            }
+            self.$root.$emit('send-message', `Are you sure you want to remove the team of <strong>${team[0].name}</strong> and <strong>${team[1].name}</strong>?`, {
+                action: 'remove-disallow-list',
+                style: 'danger',
+                actionLabel: `Yes`,
+                autohide: false,
+                payload: team
+            });
         }
     }
 });
