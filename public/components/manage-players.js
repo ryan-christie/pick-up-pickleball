@@ -39,9 +39,6 @@ Vue.component('manage-players', {
             </div>
         </div>
     `,
-    mounted: function() {
-        this.$root.$on('remove-player', this.removePlayer);
-    },
     methods: {
         addPlayer: function(e) {
             e.preventDefault();
@@ -58,7 +55,10 @@ Vue.component('manage-players', {
         },
         removePlayerConfirm: function(id) {
             const self = this;
+            self.disallowTeam = [];
+            
             const playerName = this.players.find(player => player.id === id).name;
+
             self.$root.$emit('send-message', `Are you sure you want to remove <strong>${playerName}</strong>?`, {
                 action: 'remove-player',
                 style: 'danger',
@@ -66,25 +66,6 @@ Vue.component('manage-players', {
                 autohide: false,
                 payload: id
             });
-        },
-        removePlayer: function(id) {
-            const self = this;
-            const findPlayerIndex = this.players.findIndex(player => player.id === id);
-            if (findPlayerIndex > -1) {
-                self.players.splice(findPlayerIndex, 1);
-                self.$root.$emit('save-to-local');
-            }
-
-            let updateDisallowList = [];
-            self.disallowList.forEach((team, index) => {
-                if (team[0].id !== id && team[0].id) {
-                    updateDisallowList.push(team);
-                }
-            });
-            if (updateDisallowList.length !== self.disallowList.length) {
-                self.disallowList = updateDisallowList;
-                self.$root.$emit('save-to-local');
-            }
         },
         addToDisallow: function(id) {
             const self = this;
