@@ -112,31 +112,19 @@ Vue.component('manage-players', {
         addToDisallowList: function() {
             const self = this;
 
-            let id1 = self.disallowTeam[0].id;
-            let id2 = self.disallowTeam[1].id;
-
-            const findTeamIndex = self.disallowList.findIndex(team => (team[0].id === id1 || team[1].id === id1) && (team[0].id === id2 || team[1].id === id2) );
-
-            if (findTeamIndex > -1) {
-                self.$root.$emit('send-message', 'Team is already part of the exclusion list');
-                return;
-            }
-
-            self.disallowList.push(self.disallowTeam);
-            self.$root.$emit('save-to-local');
+            self.$root.$emit('add-disallow-list', self.disallowTeam);
             self.disallowTeam = [];
         },
         removeFromDisallowList: function(team) {
             const self = this;
 
-            let id1 = team[0].id;
-            let id2 = team[1].id;
-            
-            const findTeamIndex = self.disallowList.findIndex(team => (team[0].id === id1 || team[1].id === id1) && (team[0].id === id2 || team[1].id === id2) );
-            if (findTeamIndex > -1) {
-                self.disallowList.splice(findTeamIndex, 1);
-                self.$root.$emit('save-to-local');
-            }
+            self.$root.$emit('send-message', `Are you sure you want to remove the team of <strong>${team[0].name}</strong> and <strong>${team[1].name}</strong>?`, {
+                action: 'remove-disallow-list',
+                style: 'danger',
+                actionLabel: `Yes`,
+                autohide: false,
+                payload: team
+            });
         }
     }
 });
