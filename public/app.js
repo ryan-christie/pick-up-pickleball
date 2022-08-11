@@ -3,12 +3,10 @@ var app = new Vue({
     data: {
       players: [],
       disallowList: [],
-      disallowTeam: [],
       teams: [],
       matchesPossible: [],
       matches: [],
       toasts: [],
-      scoreDiff: 0
     },
     mixins: window.mixin || [],
     mounted: function() {
