@@ -13,14 +13,14 @@ const njk = expressNunjucks(app, {
     noCache: isDev
 });
 
-app.get('/', (req, res) => {
+app.get('/view', (req, res) => {
+    res.render('view');
+});
+
+app.get('/*', (req, res) => {
     const components = fs.readdirSync('./public/components').map((file) => `/components/${file}`);
     const mixins = fs.readdirSync('./public/mixins').map((file) => `/mixins/${file}`);
     res.render('index', { components, mixins });
-});
-
-app.get('/view', (req, res) => {
-    res.render('view');
 });
 
 app.listen(port, (err) => {

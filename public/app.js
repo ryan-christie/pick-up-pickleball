@@ -7,6 +7,11 @@ var app = new Vue({
       matchesPossible: [],
       matches: [],
       toasts: [],
+      pages: [
+        { path: '/', title: 'Home', 'current': true },
+        { path: '/players', title: 'Player Management', 'current': false },
+        { path: '/stats', title: 'Stats', 'current': false },
+      ]
     },
     mixins: window.mixin || [],
     mounted: function() {
@@ -58,6 +63,9 @@ var app = new Vue({
         },
         saveToLocal: function() {
             localStorage.setItem('pickleData', JSON.stringify({players: this.players, disallowList: this.disallowList}));
+        },
+        isPath: function(path) {
+            return this.pages.findIndex(page => page.current && page.path === path) > -1;
         }
     }
   })
