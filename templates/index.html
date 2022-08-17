@@ -12,27 +12,36 @@
     <div id="app" class="container my-3" v-cloak>
         <h1>Pick-Up Pickleball</h1>
 
-        <p><button type="button" class="btn btn-danger" @click="clearStorage" >Clear Storage</button></p>
+        <navigation
+            class="mb-3"
+            :pages="pages"
+        ></navigation>
 
         <manage-players
+            v-if="isPath('/players')"
             :players="players"
             :disallow-list="disallowList"
         ></manage-players>
 
         <manage-session
+            v-if="isPath('/')"
             :players="players"
             :matches="matches"
         ></manage-session>
 
         <view-history
+            v-if="isPath('/stats')"
             :player-info="players"
         ></view-history>
         
         <debug
+            class="mb-3"
             :teams="teams"
             :matches="matches"
             :matches-possible="matchesPossible"
         ></debug>
+
+        <p><button type="button" class="btn btn-danger" @click="clearStorage" >Clear Storage</button></p>
         
         <div class="toast-container position-fixed top-0 end-0 p-3">
             <bs-toast
