@@ -5,6 +5,11 @@ var app = new Vue({
       disallowList: [],
       teams: [],
       matchesPossible: [],
+      session: {
+        id: '',
+        startTS: '',
+        endTS: ''
+      },
       matches: [],
       toasts: [],
       pages: [
