@@ -34,6 +34,16 @@ Vue.component('manage-session', {
         },
         skippedMatches: function() {
             return this.matches.filter(match => match.skip).length;
+        },
+        currentlyPlaying: function() {
+            const inProgressMatches = this.matches.filter(match => match.inProgress);
+
+            let playing = []
+            inProgressMatches.forEach(match => {
+                playing = [...playing, match.team1.p1.id, match.team1.p2.id, match.team2.p1.id, match.team2.p2.id];
+            });
+
+            return playing;
         }
 
     },
@@ -50,28 +60,16 @@ Vue.component('manage-session', {
                     </div>
                 </div>
 
-
                 <p><button type="button" class="btn btn-primary" @click="startSession" v-show="!isInSession">Start Playing</button><button type="button" class="btn btn-danger" @click="endSession" v-show="isInSession">Stop Playing</button></p>
+
                 <div class="row" v-show="isInSession">
-                    <div class="col-12 col-md-6 mb-3" v-for="match in nextMatches" v-bind:key="match.id">
-                        <div class="next-match row p-2 mx-1">
-                            <div class="align-items-center justify-content-around d-flex mb-3 gap-2">
-                                <div class="next-match__team next-match__team--1">
-                                    {{match.team1.p1.name}} <br>
-                                    {{match.team1.p2.name}}
-                                </div>
-                                <div class="text-center">vs.</div>
-                                <div class="next-match__team next-match__team--2">
-                                    {{match.team2.p1.name}} <br>
-                                    {{match.team2.p2.name}}
-                                </div>
-                            </div>
-                            <div class="justify-content-center d-flex gap-2">
-                                <button type="button" class="btn btn-success" @click="startMatch(match)">Play</button>
-                                <button type="button" class="btn btn-warning" @click="match.skip='true'">Skip</button>
-                            </div>
-                        </div>
-                    </div>
+                    <next-match
+                        v-for="match in nextMatches"
+                        v-bind:match="match"
+                        v-bind:key="match.id"
+                        v-on:start="startMatch(match)"
+                        :currently-playing="currentlyPlaying"
+                    /></next-match>
                 </div> 
             </div>
             <div class="col-md-6">
