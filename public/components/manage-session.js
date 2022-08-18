@@ -2,7 +2,7 @@ Vue.component('manage-session', {
     data() {
         return {}
     },
-    props: ['matches', 'players', 'session'],
+    props: ['matches', 'players', 'session', 'numTeams'],
     computed: {
         nextMatches: function() {
             const self = this;
@@ -94,6 +94,10 @@ Vue.component('manage-session', {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div v-show="!matchInProgress">
+                    <p>{{ numTeamsPlayed }} : {{ numTeams }} teams have played {{ numMatchesFinished }} : {{ matches.length }} possible matches.</p>
+                    <p>Let's GOOOOOoooaaahhh!!</p>
                 </div>
             </div>
             <div class="col-12" v-if="isEndSession">
