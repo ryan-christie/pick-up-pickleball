@@ -28,6 +28,9 @@ Vue.component('manage-session', {
         numTeamsPlayed: function() {
             const matchesPlayed = this.matches.filter(match => match.endTS);
             return _.uniq([...matchesPlayed.map(match => match.team1.id), ...matchesPlayed.map(match => match.team2.id)]).length;
+        },
+        completedMatches: function() {
+            return this.matches.filter(match => match.endTS);
         }
     },
     template: /*html*/`
@@ -95,13 +98,16 @@ Vue.component('manage-session', {
                         </div>
                     </div>
                 </div>
-                <div v-show="!matchInProgress">
+                <div v-show="!matchInProgress && isInSession">
                     <p>{{ numTeamsPlayed }} : {{ numTeams }} teams have played {{ numMatchesFinished }} : {{ matches.length }} possible matches.</p>
                     <p>Let's GOOOOOoooaaahhh!!</p>
                 </div>
             </div>
             <div class="col-12" v-if="isEndSession">
                 <h2>Recap</h2>
+                <match-history
+                    :matches="completedMatches"
+                /></match-history>
             </div>
         </div>
     `,
