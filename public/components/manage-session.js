@@ -31,7 +31,11 @@ Vue.component('manage-session', {
         },
         completedMatches: function() {
             return this.matches.filter(match => match.endTS);
+        },
+        skippedMatches: function() {
+            return this.matches.filter(match => match.skip).length;
         }
+
     },
     template: /*html*/`
         <div class="row">
@@ -99,7 +103,7 @@ Vue.component('manage-session', {
                     </div>
                 </div>
                 <div v-show="!matchInProgress && isInSession">
-                    <p>{{ numTeamsPlayed }} : {{ numTeams }} teams have played {{ numMatchesFinished }} : {{ matches.length }} possible matches.</p>
+                    <p>{{ numTeamsPlayed }} : {{ numTeams }} teams have played {{ numMatchesFinished }} : {{ matches.length }} possible matches with {{ skippedMatches }} skipped.</p>
                     <p>Let's GOOOOOoooaaahhh!!</p>
                 </div>
             </div>
