@@ -5,10 +5,15 @@ var app = new Vue({
       disallowList: [],
       teams: [],
       matchesPossible: [],
+      session: {
+        id: '',
+        startTS: '',
+        endTS: ''
+      },
       matches: [],
       toasts: [],
       pages: [
-        { path: '/', title: 'Home', 'current': true },
+        { path: '/', title: 'Play', 'current': true },
         { path: '/players', title: 'Player Management', 'current': false },
         { path: '/stats', title: 'Stats', 'current': false },
       ]
