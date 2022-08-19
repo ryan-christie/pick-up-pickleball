@@ -18,7 +18,7 @@ Vue.component('match-history', {
                         <div v-if="match.endTS" >{{match.score2}}</div>
                     </div>
                 </div>
-                <div class="text-center">Started at {{match.startTS | formatDate}} and played for {{ durationRel(match.startTS, match.endTS) }}</div>
+                <div class="text-center">Played {{match.startTS | formatDate}} for {{ durationRel(match.startTS, match.endTS) }}</div>
             </div>
         </div>
         <div v-show="matches.length < 1">
@@ -28,8 +28,8 @@ Vue.component('match-history', {
     `,
     filters: {
         formatDate: function(dateStr) {
-            return moment(dateStr).format('M/DD/YY h:mm a');
-            // return moment(dateStr).calendar();
+            // return moment(dateStr).format('M/DD/YY h:mm a');
+            return moment(dateStr).calendar(null, {sameElse: 'on M/D/YY'});
         }
     },
     methods: {
