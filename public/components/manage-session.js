@@ -44,8 +44,19 @@ Vue.component('manage-session', {
             });
 
             return playing;
-        }
+        },
+        sessionDuration: function() {
+            if (!this.session.startTS || !this.session.endTS) {
+                return "Play session is ongoing.";
+            }
 
+            let duration = "Played";
+            if (moment(this.session.endTS).isBefore(moment().subtract(1, 'day'))) {
+                duration += " " + moment(this.session.startTS).calendar(null, {sameElse: 'on M/D/YY'});
+            }
+
+            return duration + " for " + moment.duration(moment(this.session.endTS).diff(this.session.startTS)).humanize() + ".";
+        }
     },
     template: /*html*/`
         <div class="row">
@@ -107,6 +118,7 @@ Vue.component('manage-session', {
             </div>
             <div class="col-12" v-if="isEndSession">
                 <h2>Recap</h2>
+                <p>{{ sessionDuration }}</p>
                 <match-history
                     :matches="completedMatches"
                 /></match-history>
