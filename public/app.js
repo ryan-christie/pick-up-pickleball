@@ -2,6 +2,7 @@ var app = new Vue({
     el: '#app',
     data: {
       players: [],
+      exportString: '',
       disallowList: [],
       teams: [],
       matchesPossible: [],
@@ -65,6 +66,21 @@ var app = new Vue({
         clearStorage: function() {
             localStorage.removeItem('pickleData');
             this.players = [];
+        },
+        exportStorage: function() {
+            const myModal = new bootstrap.Modal(document.getElementById('importExport'), {});
+            myModal.show();
+
+            let pickleData = JSON.parse(localStorage.getItem('pickleData'));
+            let pickleHistoryStorage = JSON.parse(localStorage.getItem('pickleHistoryStorage'));
+            const data = JSON.stringify({
+                pickleData,
+                pickleHistoryStorage
+            });
+            this.exportString = LZString.compressToBase64(data);
+            // console.log(LZString.compressToBase64(data));
+            // console.log(LZString.compressToUTF16(data));
+
         },
         saveToLocal: function() {
             localStorage.setItem('pickleData', JSON.stringify({players: this.players, disallowList: this.disallowList}));
